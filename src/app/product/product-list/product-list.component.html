@@ -3,11 +3,14 @@
     <div fxLayout="row wrap" fxLayoutGap="50px grid">
         <div *ngFor="let product of products">
             <mat-card class="product-card" appearance="outlined">
-                <img mat-card-image src="/assets/images/{{product.imageUrl}}">
+                <img mat-card-image [src]="'/assets/images/' + product.imageUrl">
                 <mat-card-content>
                     <mat-card-title>{{product.name}}</mat-card-title>
                     <mat-card-subtitle>{{product.price | currency: 'PHP'}}</mat-card-subtitle>
                 </mat-card-content>
+                <mat-card-actions>
+                    <button mat-flat-button color="accent" (click)="addToCart(product)">Add to Cart</button>
+                </mat-card-actions>
             </mat-card>
         </div>
     </div>
