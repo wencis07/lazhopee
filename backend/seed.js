@@ -3,18 +3,32 @@ const Product = require('./models/product.model');
 require('dotenv').config();
 
 const products = [
-  { name: 'Black And White Mystery MT Helmet', price: 7446, imageUrl: 'Product_01.jpg' },
-  { name: 'White Black and Red Fade Interstellar Edition', price: 7061, imageUrl: 'Product_02.jpg' },
-  { name: 'Classic Orange Polo Shirt', price: 599, imageUrl: 'Product_03.jpg' },
-  { name: 'Casual White Sneakers', price: 1299, imageUrl: 'Product_04.png' },
-  { name: 'Minimalist Canvas Tote Bag', price: 450, imageUrl: 'Product_05.png' },
-  { name: 'Wireless Bluetooth Headphones', price: 2499, imageUrl: 'Product_06.png' },
-  { name: 'Leather Wallet Brown', price: 899, imageUrl: 'Product_07.jpg' },
-  { name: 'Stainless Steel Water Bottle', price: 650, imageUrl: 'Product_08.jpg' },
-  { name: 'Portable Phone Stand', price: 299, imageUrl: 'Product_09.png' },
-  { name: 'Cotton Round Neck T-Shirt', price: 399, imageUrl: 'Product_10.png' },
-  { name: 'Analog Wrist Watch Classic', price: 3299, imageUrl: 'Product_11.png' },
-  { name: 'Sunglasses UV400 Protection', price: 799, imageUrl: 'Product_12.jpg' },
+  // Caps
+  { name: 'Nike Dri-FIT Club Unstructured Cap', price: 850, imageUrl: 'nike_cap.jpg', category: 'Caps' },
+  { name: 'Nike Sportswear Heritage86 Futura Cap', price: 950, imageUrl: 'nike_cap2.jpg', category: 'Caps' },
+
+  // Shirts
+  { name: 'Nike Dri-FIT Miler Running Top', price: 1495, imageUrl: 'nike_shirt.jpg', category: 'Shirts' },
+  { name: 'Nike Sportswear Club T-Shirt', price: 1095, imageUrl: 'nike_shirt2.jpg', category: 'Shirts' },
+
+  // Shorts
+  { name: 'Nike Dri-FIT Challenger Running Shorts', price: 1795, imageUrl: 'nike_shorts.jpg', category: 'Shorts' },
+  { name: 'Nike Sportswear Club Fleece Shorts', price: 1495, imageUrl: 'nike_shorts2.jpg', category: 'Shorts' },
+
+  // Sneakers
+  { name: 'Nike Air Force 1 \'07', price: 6195, imageUrl: 'nike_shoes.jpg', category: 'Sneakers' },
+  { name: 'Nike Air Max 270', price: 7495, imageUrl: 'nike_shoes2.jpg', category: 'Sneakers' },
+  { name: 'Nike Revolution 6', price: 3195, imageUrl: 'nike_shoes3.jpg', category: 'Sneakers' },
+
+  // Basketball Shoes
+  { name: 'Nike LeBron Witness 8', price: 4995, imageUrl: 'nike_bballShoes.jpg', category: 'Basketball Shoes' },
+  { name: 'Nike Mamba Instinct University Red', price: 7995, imageUrl: 'nike_bballShoes2.jpg', category: 'Basketball Shoes' },
+  { name: 'Nike KD 16', price: 6495, imageUrl: 'nike_bballShoes3.jpg', category: 'Basketball Shoes' },
+
+  // Bags
+  { name: 'Nike Brasilia Training Duffel Bag', price: 1995, imageUrl: 'nike_bag.jpg', category: 'Bags' },
+  { name: 'Nike Heritage Backpack', price: 1795, imageUrl: 'nike_bag2.jpg', category: 'Bags' },
+
 ];
 
 mongoose.connect(process.env.MONGO_URI)
@@ -22,7 +36,7 @@ mongoose.connect(process.env.MONGO_URI)
     console.log('✅ Connected to MongoDB');
     await Product.deleteMany({});
     await Product.insertMany(products);
-    console.log('✅ 12 Products seeded successfully!');
+    console.log('✅ Nike products seeded successfully!');
     mongoose.connection.close();
   })
   .catch(err => console.error('❌ Error:', err));

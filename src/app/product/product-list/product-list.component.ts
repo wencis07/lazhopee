@@ -11,6 +11,9 @@ import { Product } from 'src/app/models/product';
 export class ProductListComponent implements OnInit {
 
   products: Product[] = [];
+  allProducts: Product[] = [];
+  categories: any[] = [];
+  selectedCategory: string = 'all';
 
   constructor(
     private productService: ProductService,
@@ -19,8 +22,22 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe(data => {
+      this.allProducts = data;
       this.products = data;
     });
+
+    this.productService.getCategories().subscribe(data => {
+      this.categories = data;
+    });
+  }
+
+  filterByCategory(category: string): void {
+    this.selectedCategory = category;
+    if (category === 'all') {
+      this.products = this.allProducts;
+    } else {
+      this.products = this.allProducts.filter(p => (p as any).category === category);
+    }
   }
 
   addToCart(product: Product): void {

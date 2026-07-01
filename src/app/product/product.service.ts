@@ -11,6 +11,10 @@ export class ProductService {
     return this.http.get<any[]>(`${this.apiUrl}/products`);
   }
 
+  getCategories() {
+    return this.http.get<any[]>(`${this.apiUrl}/categories`);
+  }
+  
   addProduct(product: any) {
     return this.http.post(`${this.apiUrl}/products`, product);
   }

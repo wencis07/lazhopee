@@ -39,6 +39,16 @@ router.patch('/users/:id/activate', auth, isAdmin, async (req, res) => {
   }
 });
 
+// GET all stores
+router.get('/stores', auth, isAdmin, async (req, res) => {
+  try {
+    const stores = await Store.find().populate('owner', 'name email isActive');
+    res.json(stores);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // APPROVE store
 router.patch('/stores/:id/approve', auth, isAdmin, async (req, res) => {
   try {
@@ -51,11 +61,38 @@ router.patch('/stores/:id/approve', auth, isAdmin, async (req, res) => {
   }
 });
 
-// GET all stores
-router.get('/stores', auth, isAdmin, async (req, res) => {
+// DEACTIVATE store
+router.patch('/stores/:id/deactivate', auth, isAdmin, async (req, res) => {
   try {
-    const stores = await Store.find().populate('owner', 'name email');
-    res.json(stores);
+    const store = await Store.findByIdAndUpdate(
+      req.params.id, { isActive: false }, { new: true }
+    );
+    res.json({ message: 'Store deactivated', store });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// ACTIVATE store
+router.patch('/stores/:id/activate', auth, isAdmin, async (req, res) => {
+  try {
+    const store = await Store.findByIdAndUpdate(
+      req.params.id, { isActive: true }, { new: true }
+    );
+    res.json({ message: 'Store activated', store });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// ASSIGN allowed categories to a store 👈 new route
+router.patch('/stores/:id/categories', auth, isAdmin, async (req, res) => {
+  try {
+    const { allowedCategories } = req.body;
+    const store = await Store.findByIdAndUpdate(
+      req.params.id, { allowedCategories }, { new: true }
+    );
+    res.json({ message: 'Categories assigned', store });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -69,16 +106,6 @@ router.post('/categories', auth, isAdmin, async (req, res) => {
     res.status(201).json(category);
   } catch (err) {
     res.status(400).json({ message: err.message });
-  }
-});
-
-// GET all categories
-router.get('/categories', async (req, res) => {
-  try {
-    const categories = await Category.find();
-    res.json(categories);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
   }
 });
 

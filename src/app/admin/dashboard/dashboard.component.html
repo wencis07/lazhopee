@@ -1,1 +1,101 @@
-<p>dashboard works!</p>
+<div class="admin-wrapper">
+
+  <h1>Admin Dashboard</h1>
+
+  <div class="tabs">
+    <button class="tab" [class.active]="activeTab === 'stores'" (click)="switchTab('stores')">Stores</button>
+    <button class="tab" [class.active]="activeTab === 'users'" (click)="switchTab('users')">Users</button>
+    <button class="tab" [class.active]="activeTab === 'categories'" (click)="switchTab('categories')">Categories</button>
+  </div>
+
+  <!-- STORES TAB -->
+  <div *ngIf="activeTab === 'stores'" class="tab-content">
+    <div class="card" *ngFor="let store of stores">
+      <div class="card-header">
+        <div>
+          <h3>{{ store.name }}</h3>
+          <p class="owner-info">Owner: {{ store.owner?.name }} ({{ store.owner?.email }})</p>
+        </div>
+        <div class="badges">
+          <span class="badge" [class.approved]="store.isApproved" [class.pending]="!store.isApproved">
+            {{ store.isApproved ? 'Approved' : 'Pending' }}
+          </span>
+          <span class="badge" [class.active]="store.isActive" [class.inactive]="!store.isActive">
+            {{ store.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="allowed-cats">
+        <strong>Allowed Categories:</strong>
+        <span *ngIf="store.allowedCategories?.length === 0">None assigned</span>
+        <span class="cat-chip" *ngFor="let cat of store.allowedCategories">{{ cat }}</span>
+      </div>
+
+      <div class="card-actions">
+        <button *ngIf="!store.isApproved" class="btn-approve" (click)="approveStore(store._id)">Approve Store</button>
+        <button class="btn-assign" (click)="openCategoryAssign(store)">Assign Categories</button>
+        <button class="btn-toggle" (click)="toggleStoreStatus(store)">
+          {{ store.isActive ? 'Deactivate' : 'Activate' }}
+        </button>
+      </div>
+
+      <!-- Category Assignment Panel -->
+      <div *ngIf="editingStoreId === store._id" class="assign-panel">
+        <p>Select categories this store is allowed to sell in:</p>
+        <div class="checkbox-list">
+          <label *ngFor="let cat of categories">
+            <input type="checkbox"
+                   [checked]="selectedCategories.includes(cat.name)"
+                   (change)="toggleCategorySelection(cat.name)">
+            {{ cat.name }}
+          </label>
+        </div>
+        <div class="assign-actions">
+          <button class="btn-cancel" (click)="cancelCategoryAssign()">Cancel</button>
+          <button class="btn-save" (click)="saveCategoryAssignment()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="stores.length === 0" class="empty-state">No stores yet.</div>
+  </div>
+
+  <!-- USERS TAB -->
+  <div *ngIf="activeTab === 'users'" class="tab-content">
+    <div class="table-header">
+      <span>Name</span>
+      <span>Email</span>
+      <span>Role</span>
+      <span>Status</span>
+      <span>Action</span>
+    </div>
+    <div class="table-row" *ngFor="let user of users">
+      <span>{{ user.name }}</span>
+      <span>{{ user.email }}</span>
+      <span class="role-chip">{{ user.role }}</span>
+      <span class="badge" [class.active]="user.isActive" [class.inactive]="!user.isActive">
+        {{ user.isActive ? 'Active' : 'Inactive' }}
+      </span>
+      <button class="btn-toggle" (click)="toggleUserStatus(user)">
+        {{ user.isActive ? 'Deactivate' : 'Activate' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- CATEGORIES TAB -->
+  <div *ngIf="activeTab === 'categories'" class="tab-content">
+    <div class="add-category">
+      <input type="text" [(ngModel)]="newCategoryName" placeholder="New category name (e.g. Shorts)">
+      <button (click)="addCategory()">Add Category</button>
+    </div>
+
+    <div class="category-list">
+      <div class="category-item" *ngFor="let cat of categories">
+        <span>{{ cat.name }}</span>
+        <button class="btn-delete" (click)="deleteCategory(cat._id)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+</div>

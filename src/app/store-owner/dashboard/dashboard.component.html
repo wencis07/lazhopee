@@ -1,1 +1,70 @@
-<p>dashboard works!</p>
+<div class="dashboard-wrapper">
+
+  <!-- No store yet - show create store form -->
+  <div *ngIf="!store" class="create-store-card">
+    <h2>Create Your Store</h2>
+    <p>Set up your store to start selling products</p>
+    <input type="text" [(ngModel)]="storeName" placeholder="Enter your store name">
+    <button (click)="createStore()">Create Store</button>
+  </div>
+
+  <!-- Store exists -->
+  <div *ngIf="store">
+
+    <div class="store-header">
+      <div>
+        <h2>{{ store.name }}</h2>
+        <span class="status-badge" [class.approved]="store.isApproved" [class.pending]="!store.isApproved">
+          {{ store.isApproved ? 'Approved' : 'Pending Approval' }}
+        </span>
+      </div>
+      <button class="btn-add" (click)="openAddProduct()" *ngIf="store.isApproved">+ Add Product</button>
+    </div>
+
+    <div *ngIf="!store.isApproved" class="pending-notice">
+      Your store is waiting for admin approval. You'll be able to add products once approved.
+    </div>
+
+    <!-- Product Form -->
+     <div *ngIf="showProductForm" class="product-form">
+      <h3>{{ editingProduct ? 'Edit Product' : 'Add Product' }}</h3>
+      <input type="text" [(ngModel)]="productName" placeholder="Product name">
+      <input type="number" [(ngModel)]="productPrice" placeholder="Price">
+      <input type="text" [(ngModel)]="productImageUrl" placeholder="Image filename (e.g. Product_01.jpg)">
+      <select [(ngModel)]="productCategory">
+        <option value="">Select category</option>
+        <option *ngFor="let cat of store.allowedCategories" [value]="cat">{{ cat }}</option>
+      </select>
+      <div class="form-actions">
+        <button class="btn-cancel" (click)="cancelForm()">Cancel</button>
+        <button class="btn-save" (click)="saveProduct()">Save</button>
+      </div>
+    </div>
+
+    <!-- Products List -->
+    <div class="products-table" *ngIf="store.isApproved">
+      <div class="table-header">
+        <span>Image</span>
+        <span>Name</span>
+        <span>Price</span>
+        <span>Actions</span>
+      </div>
+      <div class="table-row" *ngFor="let product of products">
+        <div class="product-img">
+          <img [src]="'/assets/images/' + product.imageUrl">
+        </div>
+        <span class="product-name">{{ product.name }}</span>
+        <span class="product-price">{{ product.price | currency: 'PHP' }}</span>
+        <div class="row-actions">
+          <button class="btn-edit" (click)="openEditProduct(product)">Edit</button>
+          <button class="btn-delete" (click)="deleteProduct(product._id)">Delete</button>
+        </div>
+      </div>
+      <div *ngIf="products.length === 0" class="empty-state">
+        No products yet. Click "Add Product" to get started.
+      </div>
+    </div>
+
+  </div>
+
+</div>

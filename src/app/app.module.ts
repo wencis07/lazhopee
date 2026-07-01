@@ -6,24 +6,25 @@ import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module'; 
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatButtonModule} from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
-import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { DashboardComponent as AdminDashboardComponent } from './admin/dashboard/dashboard.component';
+import { DashboardComponent as StoreOwnerDashboardComponent } from './store-owner/dashboard/dashboard.component';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
-    
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    DashboardComponent
+    AdminDashboardComponent,
+    StoreOwnerDashboardComponent
   ],
   imports: [
-     FormsModule,    
+    FormsModule,    
     RouterModule,
     BrowserModule,
     AppRoutingModule,

@@ -1,4 +1,16 @@
 <div class="container">
+    <h3>Categories</h3>
+    <div class="category-pills">
+        <button class="pill" [class.active]="selectedCategory === 'all'" (click)="filterByCategory('all')">
+            All
+        </button>
+        <button class="pill" *ngFor="let cat of categories" 
+                [class.active]="selectedCategory === cat.name" 
+                (click)="filterByCategory(cat.name)">
+            {{ cat.name }}
+        </button>
+    </div>
+
     <h3>Just for you</h3>
     <div fxLayout="row wrap" fxLayoutGap="50px grid">
         <div *ngFor="let product of products">
@@ -13,5 +25,9 @@
                 </mat-card-actions>
             </mat-card>
         </div>
+    </div>
+
+    <div *ngIf="products.length === 0" class="empty-state">
+        No products found in this category.
     </div>
 </div>

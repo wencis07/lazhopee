@@ -5,6 +5,7 @@ const storeSchema = new mongoose.Schema({
   owner:     { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   isActive:  { type: Boolean, default: false }, // needs admin approval
   isApproved:{ type: Boolean, default: false },
+  allowedCategories: {type: [String], default:[]},
   createdAt: { type: Date, default: Date.now }
 });
 
