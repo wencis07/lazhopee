@@ -3,5 +3,9 @@ export class Product {
     name: string = "";
     price: number = 0;
     imageUrl: string = "";
+    owner: {
+        _id: string;
+        name: string;
+    } = { _id: "", name: "" }
 
 }

@@ -15,11 +15,13 @@ const authRoutes = require('./routes/auth.routes');
 const adminRoutes = require('./routes/admin.routes');
 const storeRoutes = require('./routes/store.routes');
 const Category = require('./models/category.model'); 
+const messageRoutes = require('./routes/message.routes');
 
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/messages', messageRoutes);
 app.use('/api/store', storeRoutes);
 
 // Public categories route 

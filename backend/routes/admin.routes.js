@@ -21,6 +21,9 @@ router.patch('/users/:id/deactivate', auth, isAdmin, async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.params.id, { isActive: false }, { new: true }
     );
+
+    await User.findByIdAndUpdate(store.owner, { isActive: false });
+
     res.json({ message: 'Account deactivated', user });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -79,7 +82,10 @@ router.patch('/stores/:id/activate', auth, isAdmin, async (req, res) => {
     const store = await Store.findByIdAndUpdate(
       req.params.id, { isActive: true }, { new: true }
     );
-    res.json({ message: 'Store activated', store });
+
+    await User.findByIdAndUpdate(store.owner, { isActive: true });
+
+    res.json({ message: 'Store and owner activated', store });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

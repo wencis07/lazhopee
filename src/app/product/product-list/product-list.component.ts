@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../product.service';
 import { CartService } from 'src/app/cart/cart.service';
 import { Product } from 'src/app/models/product';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-list',
@@ -14,10 +15,12 @@ export class ProductListComponent implements OnInit {
   allProducts: Product[] = [];
   categories: any[] = [];
   selectedCategory: string = 'all';
+  selectedProduct: any = null; // 👈 for message dialog
 
   constructor(
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -44,5 +47,19 @@ export class ProductListComponent implements OnInit {
     this.cartService.addToCart(product).subscribe(() => {
       alert(`${product.name} added to cart!`);
     });
+  }
+
+  messageStore(product: any): void {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please login to message the store owner!');
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.selectedProduct = product;
+  }
+
+  closeMessageDialog(): void {
+    this.selectedProduct = null;
   }
 }

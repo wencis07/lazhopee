@@ -25,12 +25,25 @@
       Your store is waiting for admin approval. You'll be able to add products once approved.
     </div>
 
+    <div *ngIf="store.isApproved && store.allowedCategories?.length === 0" class="pending-notice">
+      The admin hasn't assigned any categories to your store yet.
+    </div>
+
     <!-- Product Form -->
-     <div *ngIf="showProductForm" class="product-form">
+    <div *ngIf="showProductForm" class="product-form">
       <h3>{{ editingProduct ? 'Edit Product' : 'Add Product' }}</h3>
       <input type="text" [(ngModel)]="productName" placeholder="Product name">
       <input type="number" [(ngModel)]="productPrice" placeholder="Price">
-      <input type="text" [(ngModel)]="productImageUrl" placeholder="Image filename (e.g. Product_01.jpg)">
+      <input type="text" [(ngModel)]="productImageUrl" placeholder="Paste image URL (https://...) or filename (e.g. nike_cap.jpg)">
+
+      <!-- Image Preview -->
+      <div class="image-preview" *ngIf="productImageUrl">
+        <p>Preview:</p>
+        <img [src]="productImageUrl.startsWith('http') ? productImageUrl : '/assets/images/' + productImageUrl"
+             alt="Product preview"
+             onerror="this.style.display='none'">
+      </div>
+
       <select [(ngModel)]="productCategory">
         <option value="">Select category</option>
         <option *ngFor="let cat of store.allowedCategories" [value]="cat">{{ cat }}</option>
@@ -51,7 +64,7 @@
       </div>
       <div class="table-row" *ngFor="let product of products">
         <div class="product-img">
-          <img [src]="'/assets/images/' + product.imageUrl">
+          <img [src]="product.imageUrl.startsWith('http') ? product.imageUrl : '/assets/images/' + product.imageUrl">
         </div>
         <span class="product-name">{{ product.name }}</span>
         <span class="product-price">{{ product.price | currency: 'PHP' }}</span>

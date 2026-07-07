@@ -16,7 +16,6 @@ export class DashboardComponent implements OnInit {
 
   newCategoryName = '';
 
-  // For assigning categories to a store
   editingStoreId: string | null = null;
   selectedCategories: string[] = [];
 
@@ -44,20 +43,52 @@ export class DashboardComponent implements OnInit {
     this.adminService.getCategories().subscribe(data => this.categories = data);
   }
 
+  trackById(index: number, item: any): string {
+    return item._id;
+  }
+
   approveStore(id: string): void {
     this.adminService.approveStore(id).subscribe(() => this.loadStores());
   }
 
   toggleStoreStatus(store: any): void {
-    const action = store.isActive ? this.adminService.deactivateStore(store._id) : this.adminService.activateStore(store._id);
-    action.subscribe(() => this.loadStores());
-  }
+    const action = store.isActive
+      ? this.adminService.deactivateStore(store._id)
+      : this.adminService.activateStore(store._id);
 
+    action.subscribe(() => {
+      this.stores = this.stores.map(s =>
+        s._id === store._id
+          ? { ...s, isActive: !store.isActive, owner: { ...s.owner, isActive: !store.isActive } }
+          : s
+      );
+
+      if (store.owner) {
+        this.users = this.users.map(u =>
+          u._id === store.owner._id ? { ...u, isActive: !store.isActive } : u
+        );
+      }
+    });
+  }
   toggleUserStatus(user: any): void {
-    const action = user.isActive ? this.adminService.deactivateUser(user._id) : this.adminService.activateUser(user._id);
-    action.subscribe(() => this.loadUsers());
-  }
+  const action = user.isActive
+    ? this.adminService.deactivateUser(user._id)
+    : this.adminService.activateUser(user._id);
 
+  action.subscribe({
+    next: (res) => {
+      console.log('API response:', res); // 👈 check this
+      console.log('Before update:', this.users.map(u => ({ name: u.name, isActive: u.isActive })));
+      
+      this.users = this.users.map(u =>
+        u._id === user._id ? { ...u, isActive: !user.isActive } : u
+      );
+
+      console.log('After update:', this.users.map(u => ({ name: u.name, isActive: u.isActive }))); // 👈 check this
+    },
+    error: (err) => console.error('Error:', err)
+  });
+}
   openCategoryAssign(store: any): void {
     this.editingStoreId = store._id;
     this.selectedCategories = [...(store.allowedCategories || [])];

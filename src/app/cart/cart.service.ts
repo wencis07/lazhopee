@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Product } from '../models/product';
 
@@ -13,19 +13,24 @@ export class CartService {
 
   constructor(private http: HttpClient) {}
 
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+  }
+
   addToCart(product: Product): Observable<Product> {
-    return this.http.post<Product>(this.apiCartUrl, product);
+    return this.http.post<Product>(this.apiCartUrl, product, { headers: this.getHeaders() });
   }
 
   getCartItems(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.apiCartUrl);
+    return this.http.get<Product[]>(this.apiCartUrl, { headers: this.getHeaders() });
   }
 
   clearCart(): Observable<void> {
-    return this.http.delete<void>(this.apiCartUrl);
+    return this.http.delete<void>(this.apiCartUrl, { headers: this.getHeaders() });
   }
 
   checkout(products: Product[]): Observable<void> {
-    return this.http.post<void>(this.apiCartUrl + '/checkout', products);
+    return this.http.post<void>(this.apiCartUrl + '/checkout', products, { headers: this.getHeaders() });
   }
 }

@@ -1,0 +1,27 @@
+<div class="dialog-overlay" (click)="closeDialog()">
+  <div class="dialog-box" (click)="$event.stopPropagation()">
+
+    <div class="dialog-header">
+      <h3>Message Store</h3>
+      <button class="btn-close" (click)="closeDialog()">✕</button>
+    </div>
+
+    <div class="dialog-body">
+      <p class="product-ref">Re: <strong>{{ product?.name }}</strong></p>
+
+      <div *ngIf="sent" class="success-msg">
+        Message sent successfully!
+      </div>
+
+      <textarea *ngIf="!sent" [(ngModel)]="messageContent" 
+                placeholder="Type your message to the store owner..."
+                rows="4"></textarea>
+
+      <div class="dialog-actions" *ngIf="!sent">
+        <button class="btn-cancel" (click)="closeDialog()">Cancel</button>
+        <button class="btn-send" (click)="sendMessage()">Send Message</button>
+      </div>
+    </div>
+
+  </div>
+</div>

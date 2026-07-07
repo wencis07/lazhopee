@@ -18,10 +18,11 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login`, data);
   }
 
-  saveToken(token: string, role: string, name: string): void {
+  saveToken(token: string, role: string, name: string, id: string): void {
     localStorage.setItem('token', token);
     localStorage.setItem('role', role);
     localStorage.setItem('name', name);
+    localStorage.setItem('userId', id);
   }
 
   getToken(): string | null {

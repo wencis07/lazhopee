@@ -14,6 +14,11 @@ import { DashboardComponent as AdminDashboardComponent } from './admin/dashboard
 import { DashboardComponent as StoreOwnerDashboardComponent } from './store-owner/dashboard/dashboard.component';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AboutComponent } from './about/about.component';
+import { InboxComponent } from './message/inbox/inbox.component';
+import { ThreadComponent } from './message/thread/thread.component';
+import { MessageDialogComponent } from './message/message-dialog/message-dialog.component';
+
 
 @NgModule({
   declarations: [
@@ -21,7 +26,11 @@ import { RouterModule } from '@angular/router';
     LoginComponent,
     RegisterComponent,
     AdminDashboardComponent,
-    StoreOwnerDashboardComponent
+    StoreOwnerDashboardComponent,
+    AboutComponent,
+    InboxComponent,
+    ThreadComponent,
+    
   ],
   imports: [
     FormsModule,    

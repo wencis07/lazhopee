@@ -1,13 +1,44 @@
 <mat-toolbar color="primary">
-    <mat-toolbar-row>
-        <a href="/products" mat-button>Products</a>
-        <a href="/cart" mat-button>Cart</a>
-    </mat-toolbar-row>
+  <mat-toolbar-row>
+
+    <!-- LOGO -->
+    <span class="nav-logo">LAZSHOPEE</span>
+
+    <span class="nav-spacer"></span>
+
+    <!-- NOT LOGGED IN → About Us -->
+    <ng-container *ngIf="!isLoggedIn()">
+      <a routerLink="/about" mat-button>About Us</a>
+    </ng-container>
+
+    <!-- CUSTOMER -->
+<ng-container *ngIf="isCustomer()">
+  <a routerLink="/products" mat-button>Products</a>
+  <a routerLink="/cart" mat-button>Cart</a>
+  <a routerLink="/inbox" mat-button>Inbox</a>
+  <button mat-button class="btn-logout" (click)="logout()">Logout</button>
+</ng-container>
+
+<!-- STORE OWNER -->
+<ng-container *ngIf="isStoreOwner()">
+  <a routerLink="/store-owner" mat-button>My Store</a>
+  <a routerLink="/inbox" mat-button>Inbox</a>
+  <button mat-button class="btn-logout" (click)="logout()">Logout</button>
+</ng-container>
+
+    <!-- ADMIN -->
+    <ng-container *ngIf="isAdmin()">
+      <a routerLink="/admin" mat-button>Dashboard</a>
+      <button mat-button class="btn-logout" (click)="logout()">Logout</button>
+    </ng-container>
+
+  </mat-toolbar-row>
 </mat-toolbar>
 
-<div class="container text-center">
-    <h1>LAZSHOPEE</h1>
-    <h2>SHOP NOW!</h2>
+<!-- Hero section — only for customers -->
+<div class="container text-center" *ngIf="isCustomer()">
+  <h1>LAZSHOPEE</h1>
+  <h2>SHOP NOW!</h2>
 </div>
 
 <router-outlet></router-outlet>

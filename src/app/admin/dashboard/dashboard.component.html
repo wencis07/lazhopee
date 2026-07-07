@@ -10,7 +10,7 @@
 
   <!-- STORES TAB -->
   <div *ngIf="activeTab === 'stores'" class="tab-content">
-    <div class="card" *ngFor="let store of stores">
+    <div class="card" *ngFor="let store of stores; trackBy: trackById">
       <div class="card-header">
         <div>
           <h3>{{ store.name }}</h3>
@@ -70,7 +70,7 @@
       <span>Status</span>
       <span>Action</span>
     </div>
-    <div class="table-row" *ngFor="let user of users">
+    <div class="table-row" *ngFor="let user of users; trackBy: trackById">
       <span>{{ user.name }}</span>
       <span>{{ user.email }}</span>
       <span class="role-chip">{{ user.role }}</span>

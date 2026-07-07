@@ -6,6 +6,8 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { DashboardComponent as AdminDashboardComponent } from './admin/dashboard/dashboard.component';
 import { DashboardComponent as StoreOwnerDashboardComponent } from './store-owner/dashboard/dashboard.component';
+import { AboutComponent } from './about/about.component';
+import { InboxComponent } from './message/inbox/inbox.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -15,6 +17,8 @@ const routes: Routes = [
   { path: 'cart', component: CartListComponent },
   { path: 'admin', component: AdminDashboardComponent },
   { path: 'store-owner', component: StoreOwnerDashboardComponent },
+  { path: 'about', component: AboutComponent },
+  { path: 'inbox', component: InboxComponent },
 ];
 
 @NgModule({

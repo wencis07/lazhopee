@@ -1,0 +1,44 @@
+<div class="inbox-wrapper">
+
+  <!-- Conversation List -->
+  <div *ngIf="!selectedConversation">
+    <h2>Inbox</h2>
+    <div *ngIf="conversations.length === 0" class="empty-state">
+      No messages yet.
+    </div>
+    <div class="conversation-item" *ngFor="let conv of conversations" (click)="openThread(conv)">
+      <div class="conv-info">
+        <span class="conv-name">{{ conv.otherUser.name }}</span>
+        <span class="conv-product">Re: {{ conv.productName }}</span>
+        <span class="conv-last">{{ conv.lastMessage }}</span>
+      </div>
+      <span class="unread-dot" *ngIf="!conv.isRead && conv.senderId !== currentUserId"></span>
+    </div>
+  </div>
+
+  <!-- Thread View -->
+  <div *ngIf="selectedConversation">
+    <div class="thread-header">
+      <button class="btn-back" (click)="goBack()">Back</button>
+      <div>
+        <h2>{{ selectedConversation.otherUser.name }}</h2>
+        <p>Re: {{ selectedConversation.productName }}</p>
+      </div>
+    </div>
+
+    <div class="thread-messages">
+      <div class="message-bubble" *ngFor="let msg of thread"
+           [class.sent]="msg.sender._id === currentUserId"
+           [class.received]="msg.sender._id !== currentUserId">
+        <span class="msg-content">{{ msg.content }}</span>
+        <span class="msg-time">{{ msg.createdAt | date: 'MMM d, h:mm a' }}</span>
+      </div>
+    </div>
+
+    <div class="reply-box">
+      <input type="text" [(ngModel)]="replyContent" placeholder="Type your reply..." (keyup.enter)="sendReply()">
+      <button (click)="sendReply()">Send</button>
+    </div>
+  </div>
+
+</div>

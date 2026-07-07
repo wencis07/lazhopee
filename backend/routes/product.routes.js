@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/product.model');
 
-// GET all products
+// GET all products — include owner info
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().populate('owner', 'name _id');
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 
@@ -7,7 +7,7 @@ import { AuthService } from '../auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   email = '';
   password = '';
@@ -15,11 +15,15 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  ngOnInit(): void {
+    this.authService.logout(); // 👈 clear any existing session
+  }
+
   login(): void {
     this.authService.login({ email: this.email, password: this.password })
       .subscribe({
         next: (res) => {
-          this.authService.saveToken(res.token, res.role, res.name);
+          this.authService.saveToken(res.token, res.role, res.name, res.id); 
           if (res.role === 'admin') {
             this.router.navigate(['/admin']);
           } else if (res.role === 'store_owner') {
