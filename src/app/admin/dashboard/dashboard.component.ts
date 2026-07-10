@@ -76,17 +76,27 @@ export class DashboardComponent implements OnInit {
     : this.adminService.activateUser(user._id);
 
   action.subscribe({
-    next: (res) => {
-      console.log('API response:', res); // 👈 check this
-      console.log('Before update:', this.users.map(u => ({ name: u.name, isActive: u.isActive })));
-      
+    next: () => {
+      // Update user in users array
       this.users = this.users.map(u =>
         u._id === user._id ? { ...u, isActive: !user.isActive } : u
       );
 
-      console.log('After update:', this.users.map(u => ({ name: u.name, isActive: u.isActive }))); // 👈 check this
+      // If store owner — also update their store in stores array
+      if (user.role === 'store_owner') {
+        this.stores = this.stores.map(s =>
+          s.owner?._id === user._id ? { ...s, isActive: !user.isActive } : s
+        );
+      }
+
+      // Reload both to make sure everything is in sync
+      this.loadUsers();
+      this.loadStores();
     },
-    error: (err) => console.error('Error:', err)
+    error: (err) => {
+      console.error('Error:', err);
+      alert('Failed to update user status. Please try again.');
+    }
   });
 }
   openCategoryAssign(store: any): void {

@@ -8,6 +8,9 @@ import { DashboardComponent as AdminDashboardComponent } from './admin/dashboard
 import { DashboardComponent as StoreOwnerDashboardComponent } from './store-owner/dashboard/dashboard.component';
 import { AboutComponent } from './about/about.component';
 import { InboxComponent } from './message/inbox/inbox.component';
+import { ProfileComponent } from './customer/profile/profile.component';
+import { OrdersComponent } from './customer/orders/orders.component';
+import { DashboardComponent as CourierDashboardComponent } from './courier/dashboard/dashboard.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -19,6 +22,9 @@ const routes: Routes = [
   { path: 'store-owner', component: StoreOwnerDashboardComponent },
   { path: 'about', component: AboutComponent },
   { path: 'inbox', component: InboxComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'orders', component: OrdersComponent },
+  { path: 'courier', component: CourierDashboardComponent },
 ];
 
 @NgModule({

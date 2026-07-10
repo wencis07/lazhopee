@@ -17,7 +17,10 @@ import { RouterModule } from '@angular/router';
 import { AboutComponent } from './about/about.component';
 import { InboxComponent } from './message/inbox/inbox.component';
 import { ThreadComponent } from './message/thread/thread.component';
-import { MessageDialogComponent } from './message/message-dialog/message-dialog.component';
+import { ProfileComponent } from './customer/profile/profile.component';
+import { OrdersComponent } from './customer/orders/orders.component';
+import { DashboardComponent as CourierDashboardComponents} from './courier/dashboard/dashboard.component';
+
 
 
 @NgModule({
@@ -30,6 +33,8 @@ import { MessageDialogComponent } from './message/message-dialog/message-dialog.
     AboutComponent,
     InboxComponent,
     ThreadComponent,
+    ProfileComponent,
+    OrdersComponent,
     
   ],
   imports: [

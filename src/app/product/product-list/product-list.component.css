@@ -84,22 +84,39 @@
   margin-top: 2px !important;
 }
 
+/* ===== STORE NAME ===== */
+.store-name {
+  font-size: 11px !important;
+  font-weight: 500;
+  color: #999999;
+  margin-top: 4px !important;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
 /* ===== CARD ACTIONS ===== */
 .product-card mat-card-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 6px !important;
   padding: 8px 14px 14px !important;
   margin: 0 !important;
 }
 
+/* ===== ADD TO CART BUTTON ===== */
 .product-card mat-card-actions button[mat-flat-button] {
-  width: 100% !important;
+  flex: 1 !important;
   background-color: #111111 !important;
   color: #ffffff !important;
   font-size: 11px !important;
   font-weight: 700 !important;
-  letter-spacing: 1px !important;
-  text-transform: uppercase !important;
+  letter-spacing: 0 !important;
+  word-spacing: 0 !important;
+  text-transform: none !important;
   border-radius: 2px !important;
   height: 36px !important;
+  white-space: nowrap !important;
   transition: background 0.15s ease !important;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
 }
@@ -108,19 +125,24 @@
   background-color: #333333 !important;
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  .container {
-    padding: 20px 16px;
-  }
+/* ===== MESSAGE STORE BUTTON ===== */
+.btn-message {
+  flex: 1 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #111111 !important;
+  border: 1.5px solid #111111 !important;
+  border-radius: 2px !important;
+  letter-spacing: 0 !important;
+  word-spacing: 0 !important;
+  text-transform: none !important;
+  height: 36px !important;
+  white-space: nowrap !important;
+  transition: background 0.15s ease !important;
+}
 
-  .product-card {
-    width: 160px;
-  }
-
-  .product-card img[mat-card-image] {
-    height: 160px;
-  }
+.btn-message:hover {
+  background: #f5f5f5 !important;
 }
 
 /* ===== CATEGORY PILLS ===== */
@@ -155,6 +177,7 @@
   border-color: #111111;
 }
 
+/* ===== EMPTY STATE ===== */
 .empty-state {
   text-align: center;
   padding: 60px 0;
@@ -163,18 +186,27 @@
   text-transform: uppercase;
   letter-spacing: 1px;
 }
-/* ===== MESSAGE BUTTON ===== */
-.btn-message {
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  color: #111111 !important;
-  border: 1.5px solid #111111 !important;
-  border-radius: 2px !important;
-  letter-spacing: 0.5px !important;
-  text-transform: uppercase !important;
-  margin-left: 4px !important;
-}
 
-.btn-message:hover {
-  background: #f5f5f5 !important;
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px 16px;
+  }
+
+  .product-card {
+    width: 160px;
+  }
+
+  .product-card img[mat-card-image] {
+    height: 160px;
+  }
+
+  .product-card mat-card-actions {
+    flex-direction: column !important;
+  }
+
+  .product-card mat-card-actions button[mat-flat-button],
+  .btn-message {
+    width: 100% !important;
+  }
 }

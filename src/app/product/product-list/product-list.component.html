@@ -19,6 +19,7 @@
                 <mat-card-content>
                     <mat-card-title>{{product.name}}</mat-card-title>
                     <mat-card-subtitle>{{product.price | currency: 'PHP'}}</mat-card-subtitle>
+                     <p class="store-name" *ngIf="product.owner">🏪 {{ product.owner.name }}</p>
                 </mat-card-content>
                 <mat-card-actions>
                     <button mat-flat-button color="accent" (click)="addToCart(product)">Add to Cart</button>

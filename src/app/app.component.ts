@@ -35,6 +35,9 @@ export class AppComponent {
   isAuthPage(): boolean {
     return this.router.url === '/login' || this.router.url === '/register';
   }
+  isCourier(): boolean {
+  return this.authService.getRole() === 'courier';
+}
 
   logout(): void {
     this.authService.logout();

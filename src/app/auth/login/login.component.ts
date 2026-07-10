@@ -28,6 +28,8 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['/admin']);
           } else if (res.role === 'store_owner') {
             this.router.navigate(['/store-owner']);
+          } else if (res.role === 'courier') {
+            this.router.navigate(['/courier']);
           } else {
             this.router.navigate(['/products']);
           }

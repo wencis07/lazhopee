@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Product } from 'src/app/models/product';
 import { CartService } from '../cart.service';
+import { OrderService } from 'src/app/order/order.service';
 
 @Component({
   selector: 'app-cart-list',
@@ -11,8 +13,14 @@ export class CartListComponent implements OnInit {
 
   cartItems: Product[] = [];
   totalPrice: number = 0;
+  showAddressForm = false;
+  deliveryAddress = '';
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private orderService: OrderService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadCart();
@@ -48,12 +56,33 @@ export class CartListComponent implements OnInit {
       alert('Your cart is empty!');
       return;
     }
-    if (confirm('Proceed to checkout?')) {
-      this.cartService.checkout(this.cartItems).subscribe(() => {
+    // 👇 Show address form instead of immediately checking out
+    this.showAddressForm = true;
+  }
+
+  confirmCheckout(): void {
+    if (!this.deliveryAddress.trim()) {
+      alert('Please enter your delivery address!');
+      return;
+    }
+
+    this.orderService.checkout(this.deliveryAddress).subscribe({
+      next: () => {
         this.cartItems = [];
         this.totalPrice = 0;
+        this.showAddressForm = false;
+        this.deliveryAddress = '';
         alert('Order placed successfully! Thank you for shopping at LazShopee!');
-      });
-    }
+        this.router.navigate(['/orders']); // 👈 redirect to orders page
+      },
+      error: (err) => {
+        alert(err.error.message || 'Checkout failed. Please try again.');
+      }
+    });
+  }
+
+  cancelCheckout(): void {
+    this.showAddressForm = false;
+    this.deliveryAddress = '';
   }
 }

@@ -16,6 +16,7 @@ const adminRoutes = require('./routes/admin.routes');
 const storeRoutes = require('./routes/store.routes');
 const Category = require('./models/category.model'); 
 const messageRoutes = require('./routes/message.routes');
+const orderRoutes = require('./routes/order.routes');
 
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
@@ -23,6 +24,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/store', storeRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Public categories route 
 app.get('/api/categories', async (req, res) => {
