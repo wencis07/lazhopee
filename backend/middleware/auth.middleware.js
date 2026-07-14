@@ -44,4 +44,4 @@ const isCourier = (req, res, next) => {
   next();
 };
 
-module.exports = { auth, isAdmin, isStoreOwner, isCustomer };
+module.exports = { auth, isAdmin, isStoreOwner, isCustomer,isCourier };

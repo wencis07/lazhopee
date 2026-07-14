@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { FlexModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, RouterLink } from '@angular/router';
 import { MessageDialogComponent } from '../message/message-dialog/message-dialog.component';
 
 @NgModule({
@@ -18,7 +18,8 @@ import { MessageDialogComponent } from '../message/message-dialog/message-dialog
     MatCardModule,
     MatButtonModule,
     FlexModule,
-    FormsModule,    
-  ]
+    FormsModule,
+    RouterLink
+]
 })
 export class ProductModule { }

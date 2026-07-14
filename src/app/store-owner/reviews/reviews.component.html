@@ -1,0 +1,33 @@
+<div class="reviews-wrapper">
+
+    <h2>Customer Reviews</h2>
+
+    <div *ngIf="ratings.length === 0" class="empty">
+        No reviews yet.
+    </div>
+
+    <div class="review-card" *ngFor="let review of ratings">
+
+        <h3>{{ review.customer?.name }}</h3>
+
+        <p>
+            ⭐ Product:
+            {{ review.productRating }}/5
+        </p>
+
+        <p>
+            🏪 Shop:
+            {{ review.shopRating }}/5
+        </p>
+
+        <p>
+            💬 {{ review.comment }}
+        </p>
+
+        <small>
+            {{ review.createdAt | date:'medium' }}
+        </small>
+
+    </div>
+
+</div>

@@ -16,13 +16,17 @@ export class OrderService {
   }
 
   // Customer
-  checkout(address: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/checkout`, { address }, { headers: this.getHeaders() });
-  }
+  checkout(address: string, storeId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/checkout`,{address,storeId},{headers: this.getHeaders()});
+}
 
   getMyOrders(): Observable<any> {
     return this.http.get(`${this.apiUrl}/my-orders`, { headers: this.getHeaders() });
   }
+
+  orderReceived(id: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}/received`,{},{ headers: this.getHeaders() });
+}
 
   // Store Owner
   getStoreOrders(): Observable<any> {
@@ -40,6 +44,9 @@ export class OrderService {
   cancelOrder(id: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${id}/cancel`, {}, { headers: this.getHeaders() });
   }
+  cancelMyOrder(id: string) 
+  {return this.http.patch( `${this.apiUrl}/${id}/customer-cancel`,{}, {headers: this.getHeaders() });
+}
 
   // Courier
   getAvailableOrders(): Observable<any> {

@@ -7,38 +7,73 @@ const { auth } = require('../middleware/auth.middleware');
 
 // ===== CUSTOMER =====
 
-// POST checkout — create order from cart
+// POST checkout — create order for ONE STORE ONLY
 router.post('/checkout', auth, async (req, res) => {
+
   try {
-    const cartItems = await Cart.find({ userId: req.user.id });
+  const { address, storeId } = req.body;
+    const cartItems = await Cart.find({
+      userId: req.user.id,
+      store: storeId
+    }).populate({
+      path: 'product',
+      populate: {
+        path: 'store'
+      }
+    });
+
     if (cartItems.length === 0) {
-      return res.status(400).json({ message: 'Cart is empty' });
+      return res.status(400).json({
+        message: 'No items from this store.'
+      });
     }
 
-    const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0);
+    const totalPrice = cartItems.reduce(
+      (sum, item) => sum + item.price,
+      0
+    );
 
-    // Get store from first cart item's product owner
     const order = new Order({
+
       customer: req.user.id,
+
+      store: storeId,
+
       items: cartItems.map(item => ({
+        product: item.product._id,
         name: item.name,
         price: item.price,
         imageUrl: item.imageUrl,
         quantity: 1
       })),
+
       totalPrice,
-      address: req.body.address || 'No address provided',
+
+      address: address,
+
       status: 'Pending'
+
     });
 
     await order.save();
 
-    // Clear cart after checkout
-    await Cart.deleteMany({ userId: req.user.id });
+    // remove ONLY this store's items
+    await Cart.deleteMany({
+      userId: req.user.id,
+      store: storeId
+    });
 
-    res.status(201).json({ message: 'Order placed successfully!', order });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(201).json({
+      message: 'Order placed!',
+      order
+    });
+  }
+  catch(err){
+
+    res.status(500).json({
+      message: err.message
+    });
+
   }
 });
 
@@ -48,7 +83,9 @@ router.get('/my-orders', auth, async (req, res) => {
     const orders = await Order.find({ customer: req.user.id })
       .populate('courier', 'name')
       .sort({ createdAt: -1 });
+
     res.json(orders);
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -66,6 +103,7 @@ router.get('/store-orders', auth, async (req, res) => {
       .populate('customer', 'name email')
       .populate('courier', 'name')
       .sort({ createdAt: -1 });
+
     res.json(orders);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -87,31 +125,74 @@ router.get('/pending', auth, async (req, res) => {
 // PATCH confirm order (store owner)
 router.patch('/:id/confirm', auth, async (req, res) => {
   try {
-    const order = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status: 'Confirmed', updatedAt: Date.now() },
-      { new: true }
-    );
-    res.json({ message: 'Order confirmed!', order });
+
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found.'
+      });
+    }
+
+    // Only Pending orders can be confirmed
+    if (order.status !== 'Pending') {
+      return res.status(400).json({
+        message: `This order cannot be confirmed because it is already ${order.status}.`
+      });
+    }
+
+    order.status = 'Confirmed';
+    order.updatedAt = Date.now();
+
+    await order.save();
+
+    res.json({
+      message: 'Order confirmed!',
+      order
+    });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({
+      message: err.message
+    });
   }
 });
 
 // PATCH cancel order (store owner)
+// PATCH cancel order (store owner)
 router.patch('/:id/cancel', auth, async (req, res) => {
   try {
-    const order = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status: 'Cancelled', updatedAt: Date.now() },
-      { new: true }
-    );
-    res.json({ message: 'Order cancelled!', order });
+
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found.'
+      });
+    }
+
+    if (order.status !== 'Pending') {
+      return res.status(400).json({
+        message: `This order cannot be cancelled because it is already ${order.status}.`
+      });
+    }
+
+    order.status = 'Cancelled';
+    order.updatedAt = Date.now();
+
+    await order.save();
+
+    res.json({
+      message: 'Order cancelled!',
+      order
+    });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({
+      message: err.message
+    });
   }
 });
-
 // ===== COURIER =====
 
 // GET all confirmed orders available for pickup
@@ -128,29 +209,113 @@ router.get('/available', auth, async (req, res) => {
 
 // PATCH courier picks up order
 router.patch('/:id/pickup', auth, async (req, res) => {
+
   try {
-    const order = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status: 'Shipped', courier: req.user.id, updatedAt: Date.now() },
-      { new: true }
-    );
-    res.json({ message: 'Order picked up!', order });
+
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found.'
+      });
+    }
+
+    if (order.status !== 'Confirmed') {
+      return res.status(400).json({
+        message: `Cannot pick up an order that is ${order.status}.`
+      });
+    }
+
+    order.status = 'Shipped';
+    order.courier = req.user.id;
+    order.updatedAt = Date.now();
+
+    await order.save();
+
+    res.json({
+      message: 'Order picked up!',
+      order
+    });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({
+      message: err.message
+    });
   }
+
 });
 
 // PATCH courier marks as delivered
 router.patch('/:id/deliver', auth, async (req, res) => {
   try {
-    const order = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status: 'Delivered', updatedAt: Date.now() },
-      { new: true }
-    );
-    res.json({ message: 'Order delivered!', order });
+
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found.'
+      });
+    }
+
+    // Only shipped orders can be delivered
+    if (order.status !== 'Shipped') {
+      return res.status(400).json({
+        message: `Cannot deliver an order that is ${order.status}.`
+      });
+    }
+
+    order.status = 'Delivered';
+    order.updatedAt = Date.now();
+
+    await order.save();
+
+    res.json({
+      message: 'Order delivered!',
+      order
+    });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({
+      message: err.message
+    });
+  }
+});
+
+// CUSTOMER confirms order received
+router.patch('/:id/received', auth, async (req, res) => {
+  try {
+
+    const order = await Order.findOne({
+      _id: req.params.id,
+      customer: req.user.id
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found'
+      });
+    }
+
+    if (order.status !== 'Delivered') {
+      return res.status(400).json({
+        message: 'Only delivered orders can be completed.'
+      });
+    }
+
+    order.status = 'Completed';
+    order.updatedAt = Date.now();
+
+    await order.save();
+
+    res.json({
+      message: 'Order completed successfully!',
+      order
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      message: err.message
+    });
   }
 });
 
@@ -166,4 +331,44 @@ router.get('/my-deliveries', auth, async (req, res) => {
   }
 });
 
+//CUSTOMER CANCEL ORDER 
+router.patch('/:id/customer-cancel', auth, async (req, res) => {
+  try {
+
+    const order = await Order.findOne({
+      _id: req.params.id,
+      customer: req.user.id
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found.'
+      });
+    }
+
+    // Customer can only cancel while Pending
+    if (order.status !== 'Pending') {
+      return res.status(400).json({
+        message: 'This order has already been processed and can no longer be cancelled.'
+      });
+    }
+
+    order.status = 'Cancelled';
+    order.updatedAt = Date.now();
+
+    await order.save();
+
+    res.json({
+      message: 'Order cancelled successfully.',
+      order
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      message: err.message
+    });
+  }
+});
+
 module.exports = router;
+

@@ -1,0 +1,42 @@
+.reviews-wrapper{
+
+    max-width:900px;
+    margin:30px auto;
+
+}
+
+.review-card{
+
+    background:#fff;
+
+    border-radius:10px;
+
+    padding:20px;
+
+    margin-bottom:20px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+
+}
+
+.review-card h3{
+
+    margin:0 0 10px;
+
+}
+
+.review-card p{
+
+    margin:6px 0;
+
+}
+
+.empty{
+
+    text-align:center;
+
+    color:#888;
+
+    padding:40px;
+
+}

@@ -1,1 +1,165 @@
-<p>dashboard works!</p>
+<div class="courier-wrapper">
+
+  <h1>Courier Dashboard</h1>
+
+  <div class="tabs">
+  <button
+    class="tab"
+    [class.active]="activeTab === 'available'"
+    (click)="activeTab='available'">
+
+    Available Orders
+  </button>
+
+  <button
+  class="tab"
+  [class.active]="activeTab === 'myDeliveries'"
+  (click)="activeTab='myDeliveries'">
+
+  My Deliveries
+
+  <span class="badge-count" *ngIf="myDeliveries.length">
+    {{ myDeliveries.length }}
+  </span>
+
+</button>
+  <button
+    class="tab"
+    [class.active]="activeTab === 'ratings'"
+    (click)="activeTab='ratings'">
+
+    Delivery Ratings
+  </button>
+</div>
+
+  <!-- AVAILABLE ORDERS -->
+  <div *ngIf="activeTab === 'available'" class="tab-content">
+    <div *ngIf="availableOrders.length === 0" class="empty-state">
+      No available orders for pickup.
+    </div>
+
+    <div class="order-card" *ngFor="let order of availableOrders">
+      <div class="order-header">
+        <div>
+          <span class="order-id">Order #{{ order._id.slice(-6).toUpperCase() }}</span>
+          <span class="order-status status-confirmed">{{ order.status }}</span>
+        </div>
+        <span class="order-date">{{ order.createdAt | date: 'MMM d, y' }}</span>
+      </div>
+
+      <div class="order-customer">
+        <span class="label">Customer:</span>
+        <span>{{ order.customer?.name }} ({{ order.customer?.email }})</span>
+      </div>
+
+      <div class="order-address">
+        <span class="label">Delivery Address:</span>
+        <span>{{ order.address }}</span>
+      </div>
+
+      <div class="order-items">
+        <span class="label">Items:</span>
+        <div class="item-list">
+          <div class="item" *ngFor="let item of order.items">
+            <img [src]="item.imageUrl?.startsWith('http') ? item.imageUrl : '/assets/images/' + item.imageUrl"
+                 alt="{{ item.name }}">
+            <span>{{ item.name }}</span>
+            <span class="item-price">{{ item.price | currency: 'PHP' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-total">
+        <span class="label">Total:</span>
+        <span class="total-price">{{ order.totalPrice | currency: 'PHP' }}</span>
+      </div>
+
+      <div class="order-actions">
+        <button class="btn-pickup" (click)="pickupOrder(order._id)">
+          Pick Up Order
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY DELIVERIES -->
+  <div *ngIf="activeTab === 'myDeliveries'" class="tab-content">
+    <div *ngIf="myDeliveries.length === 0" class="empty-state">
+      No deliveries yet.
+    </div>
+
+    <div class="order-card" *ngFor="let order of myDeliveries">
+      <div class="order-header">
+        <div>
+          <span class="order-id">Order #{{ order._id.slice(-6).toUpperCase() }}</span>
+          <span class="order-status" [ngClass]="getStatusClass(order.status)">{{ order.status }}</span>
+        </div>
+        <span class="order-date">{{ order.createdAt | date: 'MMM d, y' }}</span>
+      </div>
+
+      <div class="order-customer">
+        <span class="label">Customer:</span>
+        <span>{{ order.customer?.name }} ({{ order.customer?.email }})</span>
+      </div>
+
+      <div class="order-address">
+        <span class="label">Delivery Address:</span>
+        <span>{{ order.address }}</span>
+      </div>
+
+      <div class="order-items">
+        <span class="label">Items:</span>
+        <div class="item-list">
+          <div class="item" *ngFor="let item of order.items">
+            <img [src]="item.imageUrl?.startsWith('http') ? item.imageUrl : '/assets/images/' + item.imageUrl"
+                 alt="{{ item.name }}">
+            <span>{{ item.name }}</span>
+            <span class="item-price">{{ item.price | currency: 'PHP' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-total">
+        <span class="label">Total:</span>
+        <span class="total-price">{{ order.totalPrice | currency: 'PHP' }}</span>
+      </div>
+
+      <div class="order-actions" *ngIf="order.status === 'Shipped'">
+        <button class="btn-deliver" (click)="deliverOrder(order._id)">
+          Mark as Delivered
+        </button>
+
+      </div>
+      <div class="delivered-badge" *ngIf="order.status === 'Delivered'">
+        ✓ Delivered
+      </div>
+
+    </div>
+  </div>
+  <!-- DELIVERY RATINGS -->
+<div *ngIf="activeTab === 'ratings'">
+    <div *ngIf="ratings.length === 0" class="empty-state">
+        No delivery ratings yet.
+    </div>
+    <div class="order-card" *ngFor="let rating of ratings">
+        <div class="order-header">
+            <h3>
+                {{ rating.customer?.name }}
+            </h3>
+            <span class="order-date">
+                {{ rating.createdAt | date:'MMM d, y' }}
+            </span>
+        </div>
+        <div class="review-section">
+            <p>
+                <strong>Shipping Rating:</strong>
+                {{ rating.shippingRating }}/5 ⭐
+            </p>
+            <p class="review-comment">
+                "{{ rating.comment }}"
+            </p>
+        </div>
+    </div>
+</div>
+
+</div>

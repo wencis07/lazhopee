@@ -1,0 +1,45 @@
+```html
+<div class="rating-card">
+
+    <h2>⭐ Rate Your Experience</h2>
+
+    <label>Product Rating</label>
+    <select [(ngModel)]="productRating">
+        <option *ngFor="let r of [5,4,3,2,1]" [value]="r">
+            {{ r }} ★
+        </option>
+    </select>
+
+    <label>Shop Rating</label>
+    <select [(ngModel)]="shopRating">
+        <option *ngFor="let r of [5,4,3,2,1]" [value]="r">
+            {{ r }} ★
+        </option>
+    </select>
+
+    <label>Shipping Rating</label>
+    <select [(ngModel)]="shippingRating">
+        <option *ngFor="let r of [5,4,3,2,1]" [value]="r">
+            {{ r }} ★
+        </option>
+    </select>
+
+    <label>Review (Optional)</label>
+    <textarea
+        rows="5"
+        placeholder="Tell us about your experience..."
+        [(ngModel)]="comment">
+    </textarea>
+
+    <div class="button-group">
+        <button class="btn-cancel" (click)="close()">
+            Cancel
+        </button>
+
+        <button class="btn-submit" (click)="submitRating()">
+            Submit Review
+        </button>
+    </div>
+
+</div>
+```

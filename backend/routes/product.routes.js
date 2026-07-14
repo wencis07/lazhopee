@@ -5,7 +5,7 @@ const Product = require('../models/product.model');
 // GET all products — include owner info
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find().populate('owner', 'name _id');
+    const products = await Product.find().populate({path: 'store', select: 'name owner', populate: { path: 'owner', select: 'name' }});
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });

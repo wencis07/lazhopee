@@ -1,10 +1,13 @@
 <div class="dashboard-wrapper">
 
-  <!-- No store yet - show create store form -->
+  <!-- No store yet -->
   <div *ngIf="!store" class="create-store-card">
     <h2>Create Your Store</h2>
     <p>Set up your store to start selling products</p>
     <input type="text" [(ngModel)]="storeName" placeholder="Enter your store name">
+    <input type="text" [(ngModel)]="storeAddress" placeholder="Store address">
+    <input type="number" [(ngModel)]="storeLatitude" placeholder="Latitude">
+    <input type="number" [(ngModel)]="storeLongitude" placeholder="Longitude">
     <button (click)="createStore()">Create Store</button>
   </div>
 
@@ -18,66 +21,346 @@
           {{ store.isApproved ? 'Approved' : 'Pending Approval' }}
         </span>
       </div>
-      <button class="btn-add" (click)="openAddProduct()" *ngIf="store.isApproved">+ Add Product</button>
+      <button class="btn-add" (click)="openAddProduct()" *ngIf="store.isApproved && activeTab === 'products'">+ Add Product</button>
     </div>
 
     <div *ngIf="!store.isApproved" class="pending-notice">
-      Your store is waiting for admin approval. You'll be able to add products once approved.
+      Your store is waiting for admin approval.
     </div>
 
     <div *ngIf="store.isApproved && store.allowedCategories?.length === 0" class="pending-notice">
       The admin hasn't assigned any categories to your store yet.
     </div>
 
-    <!-- Product Form -->
-    <div *ngIf="showProductForm" class="product-form">
-      <h3>{{ editingProduct ? 'Edit Product' : 'Add Product' }}</h3>
-      <input type="text" [(ngModel)]="productName" placeholder="Product name">
-      <input type="number" [(ngModel)]="productPrice" placeholder="Price">
-      <input type="text" [(ngModel)]="productImageUrl" placeholder="Paste image URL (https://...) or filename (e.g. nike_cap.jpg)">
+    <!-- TABS -->
+    <div class="tabs" *ngIf="store.isApproved">
+      <button class="tab" [class.active]="activeTab === 'products'" (click)="switchTab('products')">Products</button>
+      <button class="tab" [class.active]="activeTab === 'orders'" (click)="switchTab('orders')">
+        Orders
+        <span class="badge-count" *ngIf="orders.length > 0">{{ orders.length }}</span>
+      </button>
+      <button class="tab" [class.active]="activeTab === 'reviews'"(click)="switchTab('reviews')">Reviews</button>
 
-      <!-- Image Preview -->
-      <div class="image-preview" *ngIf="productImageUrl">
-        <p>Preview:</p>
-        <img [src]="productImageUrl.startsWith('http') ? productImageUrl : '/assets/images/' + productImageUrl"
-             alt="Product preview"
-             onerror="this.style.display='none'">
+    </div>
+
+    <!-- PRODUCTS TAB -->
+    <div *ngIf="activeTab === 'products'">
+
+      <!-- Product Form -->
+      <div *ngIf="showProductForm" class="product-form">
+        <h3>{{ editingProduct ? 'Edit Product' : 'Add Product' }}</h3>
+        <input type="text" [(ngModel)]="productName" placeholder="Product name">
+        <input type="number" [(ngModel)]="productPrice" placeholder="Price">
+        <input type="text" [(ngModel)]="productImageUrl" placeholder="Paste image URL (https://...) or filename">
+
+        <div class="image-preview" *ngIf="productImageUrl">
+          <p>Preview:</p>
+          <img [src]="productImageUrl.startsWith('http') ? productImageUrl : '/assets/images/' + productImageUrl"
+               alt="Product preview"
+               onerror="this.style.display='none'">
+        </div>
+
+        <select [(ngModel)]="productCategory">
+          <option value="">Select category</option>
+          <option *ngFor="let cat of store.allowedCategories" [value]="cat">{{ cat }}</option>
+        </select>
+        <div class="form-actions">
+          <button class="btn-cancel" (click)="cancelForm()">Cancel</button>
+          <button class="btn-save" (click)="saveProduct()">Save</button>
+        </div>
       </div>
 
-      <select [(ngModel)]="productCategory">
-        <option value="">Select category</option>
-        <option *ngFor="let cat of store.allowedCategories" [value]="cat">{{ cat }}</option>
-      </select>
-      <div class="form-actions">
-        <button class="btn-cancel" (click)="cancelForm()">Cancel</button>
-        <button class="btn-save" (click)="saveProduct()">Save</button>
+      <!-- Products List -->
+      <div class="products-table">
+        <div class="table-header">
+          <span>Image</span>
+          <span>Name</span>
+          <span>Price</span>
+          <span>Actions</span>
+        </div>
+        <div class="table-row" *ngFor="let product of products">
+          <div class="product-img">
+            <img [src]="product.imageUrl.startsWith('http') ? product.imageUrl : '/assets/images/' + product.imageUrl">
+          </div>
+          <span class="product-name">{{ product.name }}</span>
+          <span class="product-price">{{ product.price | currency: 'PHP' }}</span>
+          <div class="row-actions">
+            <button class="btn-edit" (click)="openEditProduct(product)">Edit</button>
+            <button class="btn-delete" (click)="deleteProduct(product._id)">Delete</button>
+          </div>
+        </div>
+        <div *ngIf="products.length === 0" class="empty-state">
+          No products yet. Click "Add Product" to get started.
+        </div>
       </div>
     </div>
 
-    <!-- Products List -->
-    <div class="products-table" *ngIf="store.isApproved">
-      <div class="table-header">
-        <span>Image</span>
-        <span>Name</span>
-        <span>Price</span>
-        <span>Actions</span>
+<!-- ORDERS TAB -->
+<div *ngIf="activeTab === 'orders'">
+
+  <!-- Order Tabs -->
+  <div class="order-tabs">
+
+    <button
+      class="tab"
+      [class.active]="orderTab === 'active'"
+      (click)="orderTab='active'">
+
+      Active Orders
+
+      <span
+        class="badge-count"
+        *ngIf="activeOrders.length">
+
+        {{ activeOrders.length }}
+
+      </span>
+
+    </button>
+
+    <button
+      class="tab"
+      [class.active]="orderTab === 'completed'"
+      (click)="orderTab='completed'">
+
+      Completed
+
+      <span
+        class="badge-count"
+        *ngIf="completedOrders.length">
+
+        {{ completedOrders.length }}
+
+      </span>
+
+    </button>
+
+  </div>
+
+  <div class="orders-container">
+
+    <!-- ACTIVE ORDERS -->
+    <div [hidden]="orderTab !== 'active'">
+
+      <div
+        *ngIf="activeOrders.length === 0"
+        class="empty-state">
+
+        No active orders.
+
       </div>
-      <div class="table-row" *ngFor="let product of products">
-        <div class="product-img">
-          <img [src]="product.imageUrl.startsWith('http') ? product.imageUrl : '/assets/images/' + product.imageUrl">
+
+      <div
+        class="order-card"
+        *ngFor="let order of activeOrders">
+
+        <div class="order-header">
+
+          <div>
+
+            <span class="order-id">
+              Order #{{ order._id.slice(-6).toUpperCase() }}
+            </span>
+
+            <span
+              class="order-status"
+              [ngClass]="getStatusClass(order.status)">
+
+              {{ order.status }}
+
+            </span>
+
+          </div>
+
+          <span class="order-date">
+            {{ order.createdAt | date:'MMM d, y' }}
+          </span>
+
         </div>
-        <span class="product-name">{{ product.name }}</span>
-        <span class="product-price">{{ product.price | currency: 'PHP' }}</span>
-        <div class="row-actions">
-          <button class="btn-edit" (click)="openEditProduct(product)">Edit</button>
-          <button class="btn-delete" (click)="deleteProduct(product._id)">Delete</button>
+
+        <div class="order-customer">
+          <span class="label">Customer:</span>
+          <span>{{ order.customer?.name }} ({{ order.customer?.email }})</span>
+        </div>
+
+        <div class="order-address">
+          <span class="label">Address:</span>
+          <span>{{ order.address }}</span>
+        </div>
+
+        <div class="order-items">
+
+          <span class="label">Items:</span>
+
+          <div class="item-list">
+
+            <div
+              class="item"
+              *ngFor="let item of order.items">
+
+              <img
+                [src]="item.imageUrl?.startsWith('http')
+                ? item.imageUrl
+                : '/assets/images/' + item.imageUrl">
+
+              <span>{{ item.name }}</span>
+
+              <span class="item-price">
+                {{ item.price | currency:'PHP' }}
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="order-total">
+
+          <span class="label">Total:</span>
+
+          <span class="total-price">
+            {{ order.totalPrice | currency:'PHP' }}
+          </span>
+
+        </div>
+
+        <div class="order-actions">
+
+          <button
+            class="btn-cancel-order"
+            (click)="cancelOrder(order._id)">
+
+            Cancel
+
+          </button>
+
+          <button
+            class="btn-confirm"
+            (click)="confirmOrder(order._id)">
+
+            Confirm Order
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- COMPLETED ORDERS -->
+    <div [hidden]="orderTab !== 'completed'">
+
+      <div
+        *ngIf="completedOrders.length === 0"
+        class="empty-state">
+
+        No completed orders.
+
+      </div>
+
+      <div
+        class="order-card"
+        *ngFor="let order of completedOrders">
+
+        <div class="order-header">
+
+          <div>
+
+            <span class="order-id">
+              Order #{{ order._id.slice(-6).toUpperCase() }}
+            </span>
+
+            <span
+              class="order-status"
+              [ngClass]="getStatusClass(order.status)">
+
+              {{ order.status }}
+
+            </span>
+
+          </div>
+
+          <span class="order-date">
+            {{ order.createdAt | date:'MMM d, y' }}
+          </span>
+
+        </div>
+
+        <div class="order-customer">
+          <span class="label">Customer:</span>
+          <span>{{ order.customer?.name }} ({{ order.customer?.email }})</span>
+        </div>
+
+        <div class="order-address">
+          <span class="label">Address:</span>
+          <span>{{ order.address }}</span>
+        </div>
+
+        <div class="order-items">
+
+          <span class="label">Items:</span>
+
+          <div class="item-list">
+
+            <div
+              class="item"
+              *ngFor="let item of order.items">
+
+              <img
+                [src]="item.imageUrl?.startsWith('http')
+                ? item.imageUrl
+                : '/assets/images/' + item.imageUrl">
+
+              <span>{{ item.name }}</span>
+
+              <span class="item-price">
+                {{ item.price | currency:'PHP' }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="order-total">
+          <span class="label">Total:</span>
+          <span class="total-price">
+            {{ order.totalPrice | currency:'PHP' }}
+          </span>
         </div>
       </div>
-      <div *ngIf="products.length === 0" class="empty-state">
-        No products yet. Click "Add Product" to get started.
-      </div>
+    </div>
+  </div>
+</div>
+  
+  </div>
+  <!-- REVIEWS TAB -->
+<div *ngIf="activeTab === 'reviews'">
+
+  <div *ngIf="ratings.length === 0" class="empty-state">
+    No reviews yet.
+  </div>
+
+  <div class="order-card" *ngFor="let rating of ratings">
+
+    <div class="order-header">
+      <h3>{{ rating.customer?.name }}</h3>
+      <span class="order-date">
+        {{ rating.createdAt | date:'MMM d, y' }}
+      </span>
+    </div>
+
+    <div class="review-section">
+      <p><strong> Product:</strong> {{ rating.productRating }}/5</p>
+      <p><strong> Shop:</strong> {{ rating.shopRating }}/5</p>
+      <p><strong> Shipping:</strong> {{ rating.shippingRating }}/5</p>
+
+      <p class="review-comment">
+        "{{ rating.comment }}"
+      </p>
     </div>
 
   </div>
+
+</div>
 
 </div>

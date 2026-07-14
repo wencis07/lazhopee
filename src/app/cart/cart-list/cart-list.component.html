@@ -9,17 +9,74 @@
   <div class="cart-body">
 
     <!-- Cart Items -->
-    <div class="cart-items">
-      <div class="cart-item" *ngFor="let item of cartItems">
-        <div class="item-img">
-          <img [src]="'/assets/images/' + item.imageUrl" alt="{{ item.name }}">
-        </div>
-        <div class="item-details">
-          <span class="item-name">{{ item.name }}</span>
-          <span class="item-price">{{ item.price | currency: 'PHP' }}</span>
-        </div>
-      </div>
+   <!-- Cart Items -->
+<div class="cart-items">
+
+  <div class="store-section" *ngFor="let group of groupedCart">
+
+    <!-- Store Header -->
+    <div class="store-header">
+      <span class="store-title">
+        🏪 {{ group.store.name }}
+      </span>
     </div>
+
+    <!-- Products -->
+    <div class="cart-item" *ngFor="let item of group.items">
+
+      <div class="item-img">
+        <img
+          [src]="item.imageUrl.startsWith('http')
+            ? item.imageUrl
+            : '/assets/images/' + item.imageUrl">
+      </div>
+
+      <div class="item-details">
+        <span class="item-name">
+          {{ item.name }}
+        </span>
+
+        <span class="item-price">
+          {{ item.price | currency:'PHP' }}
+        </span>
+      </div>
+
+    </div>
+
+    <!-- Store Total -->
+    <div class="store-summary">
+
+      <span class="store-total">
+        Store Total
+      </span>
+
+      <span class="store-price">
+        {{ group.total | currency:'PHP' }}
+      </span>
+
+    </div>
+
+    <!-- Store Checkout -->
+    <div class="store-actions">
+
+      <button
+        mat-flat-button
+        color="accent"
+        class="btn-checkout"
+        (click)="checkoutStore(group)">
+
+        Checkout
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+</div>
 
     <!-- Total -->
     <div class="cart-total">
@@ -27,19 +84,35 @@
       <span class="total-price">{{ totalPrice | currency: 'PHP' }}</span>
     </div>
 
+    <!-- Address Form -->
+    <!-- Address Form -->
+<div class="checkout-modal" *ngIf="showAddressForm">
+
+  <div class="checkout-card"><h3>Delivery Address</h3>
+    <p>
+      Please enter the delivery address for this order.
+    </p>
+    <textarea [(ngModel)]="deliveryAddress"
+      placeholder="House No., Street, Barangay, City, Province"
+      rows="4">
+    </textarea>
+    <div class="address-actions">
+      <button
+        class="btn-cancel-address"
+        (click)="cancelCheckout()">Cancel</button>
+      <button
+        class="btn-confirm"
+        (click)="confirmCheckout()">Confirm Order
+      </button>
+    </div>
+  </div>
+</div>
     <!-- Actions -->
-    <div class="cart-actions">
+    <div class="cart-actions" *ngIf="!showAddressForm">
       <button class="back-btn" routerLink="/products">← Back to Products</button>
       <div class="action-buttons">
         <button mat-stroked-button class="btn-clear" (click)="clearCart()">
           🗑 Clear Cart
         </button>
-        <button mat-flat-button color="accent" class="btn-checkout" (click)="checkout()">
-          Checkout →
-        </button>
       </div>
     </div>
-
-  </div>
-
-</div>

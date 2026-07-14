@@ -6,37 +6,47 @@
 
     <span class="nav-spacer"></span>
 
-    <!-- NOT LOGGED IN → About Us -->
-    <ng-container *ngIf="!isLoggedIn()">
-      <a routerLink="/about" mat-button>About Us</a>
-    </ng-container>
+<!-- NOT LOGGED IN -->
+<ng-container *ngIf="!loggedIn">
+  <a routerLink="/about" mat-button>About Us</a>
+</ng-container>
 
-    <!-- CUSTOMER -->
-<ng-container *ngIf="isCustomer()">
+<!-- CUSTOMER -->
+<ng-container *ngIf="loggedIn && role === 'customer' && !isAuthPage()">
   <a routerLink="/products" mat-button>Products</a>
   <a routerLink="/cart" mat-button>Cart</a>
+  <a routerLink="/orders" mat-button>Orders</a>
+  <a routerLink="/profile" mat-button>Profile</a>
   <a routerLink="/inbox" mat-button>Inbox</a>
-  <button mat-button class="btn-logout" (click)="logout()">Logout</button>
+  <button mat-button (click)="logout()">Logout</button>
 </ng-container>
 
 <!-- STORE OWNER -->
-<ng-container *ngIf="isStoreOwner()">
+<ng-container *ngIf="loggedIn && role === 'store_owner' && !isAuthPage()">
   <a routerLink="/store-owner" mat-button>My Store</a>
+  <a routerLink="/store-settings" mat-button>Store Settings</a>
+  <a routerLink="/profile" mat-button>Profile</a>
   <a routerLink="/inbox" mat-button>Inbox</a>
-  <button mat-button class="btn-logout" (click)="logout()">Logout</button>
+  <button mat-button (click)="logout()">Logout</button>
 </ng-container>
 
-    <!-- ADMIN -->
-    <ng-container *ngIf="isAdmin()">
-      <a routerLink="/admin" mat-button>Dashboard</a>
-      <button mat-button class="btn-logout" (click)="logout()">Logout</button>
-    </ng-container>
+<!-- ADMIN -->
+<ng-container *ngIf="loggedIn && role === 'admin' && !isAuthPage()">
+  <a routerLink="/admin" mat-button>Dashboard</a>
+  <button mat-button (click)="logout()">Logout</button>
+</ng-container>
+
+<!-- COURIER -->
+<ng-container *ngIf="loggedIn && role === 'courier'&& !isAuthPage()">
+  <a routerLink="/courier" mat-button>Dashboard</a>
+  <button mat-button (click)="logout()">Logout</button>
+</ng-container>
 
   </mat-toolbar-row>
 </mat-toolbar>
 
 <!-- Hero section — only for customers -->
-<div class="container text-center" *ngIf="isCustomer()">
+<div class="container text-center" *ngIf="role === 'customer'">
   <h1>LAZSHOPEE</h1>
   <h2>SHOP NOW!</h2>
 </div>

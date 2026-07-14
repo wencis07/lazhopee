@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import {MatListModule} from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     CartListComponent
@@ -14,7 +15,8 @@ import { RouterModule } from '@angular/router';
     MatCardModule,
     MatListModule,
     MatButtonModule,
-    RouterModule
+    RouterModule,
+    FormsModule
   ]
 })
 export class CartModule { }

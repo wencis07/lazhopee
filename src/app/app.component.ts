@@ -1,46 +1,59 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { AuthService } from './auth/auth.service';
+import { filter } from 'rxjs/operators';
+import { OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
 
-  title = 'online-selling-app';
+
+  loggedIn = false;
+  role = '';
+  subscription!: Subscription;
 
   constructor(
     public authService: AuthService,
     public router: Router
   ) {}
 
-  isLoggedIn(): boolean {
-    return this.authService.isLoggedIn();
-  }
+ ngOnInit(): void {
 
-  isCustomer(): boolean {
-    return this.authService.getRole() === 'customer';
-  }
+  this.refreshUserState();
 
-  isAdmin(): boolean {
-    return this.authService.getRole() === 'admin';
-  }
+  this.subscription = this.authService.loggedIn$
+    .subscribe(() => {
+      this.refreshUserState();
+    });
 
-  isStoreOwner(): boolean {
-    return this.authService.getRole() === 'store_owner';
+}
+
+  refreshUserState(): void {
+    this.loggedIn = this.authService.isLoggedIn();
+    this.role = this.authService.getRole() ?? '';
   }
 
   isAuthPage(): boolean {
-    return this.router.url === '/login' || this.router.url === '/register';
+    return [
+      '/login',
+      '/register',
+      '/forgot-password',
+      '/reset-password'
+    ].includes(this.router.url);
   }
-  isCourier(): boolean {
-  return this.authService.getRole() === 'courier';
-}
 
   logout(): void {
     this.authService.logout();
+    this.refreshUserState();
     this.router.navigate(['/login']);
   }
+  ngOnDestroy(): void {
+  this.subscription.unsubscribe();
+}
+
 }

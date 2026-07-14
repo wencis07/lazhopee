@@ -23,17 +23,29 @@ export class LoginComponent implements OnInit {
     this.authService.login({ email: this.email, password: this.password })
       .subscribe({
         next: (res) => {
-          this.authService.saveToken(res.token, res.role, res.name, res.id); 
-          if (res.role === 'admin') {
-            this.router.navigate(['/admin']);
-          } else if (res.role === 'store_owner') {
-            this.router.navigate(['/store-owner']);
-          } else if (res.role === 'courier') {
-            this.router.navigate(['/courier']);
-          } else {
-            this.router.navigate(['/products']);
-          }
-        },
+
+  console.log('LOGIN RESPONSE:', res);
+
+  this.authService.saveToken(
+    res.token,
+    res.role,
+    res.name,
+    res.id
+  );
+
+  console.log('TOKEN SAVED:', localStorage.getItem('token'));
+
+  if (res.role === 'admin') {
+    this.router.navigate(['/admin']);
+  } else if (res.role === 'store_owner') {
+    this.router.navigate(['/store-owner']);
+  } else if (res.role === 'courier') {
+    this.router.navigate(['/courier']);
+  } else {
+    this.router.navigate(['/products']);
+  }
+
+},
         error: (err) => {
           this.errorMessage = err.error.message || 'Login failed';
         }

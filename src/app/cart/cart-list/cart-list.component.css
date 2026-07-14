@@ -239,3 +239,273 @@
 .back-btn:hover {
   background: #f5f5f5;
 }
+.store-group{
+    margin-bottom:30px;
+    border:1px solid #e5e5e5;
+    background:#fff;
+}
+
+.store-header{
+    padding:16px 20px;
+    background:#f8f8f8;
+    font-weight:700;
+    border-bottom:1px solid #ddd;
+}
+
+.store-total{
+    padding:18px 20px;
+    text-align:right;
+    border-top:1px solid #eee;
+    font-size:15px;
+}
+
+.btn-checkout-store{
+    margin:0 20px 20px auto;
+    display:block;
+    background:#111;
+    color:#fff;
+    border:none;
+    padding:12px 24px;
+    cursor:pointer;
+    font-weight:700;
+    text-transform:uppercase;
+}
+
+.btn-checkout-store:hover{
+    background:#333;
+}
+/* ================= STORE SECTION ================= */
+
+.store-section{
+  margin-bottom:32px;
+  border-bottom:1px solid #e5e5e5;
+}
+
+/* ================= STORE HEADER ================= */
+
+.store-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:14px 12px;
+
+  background:#fafafa;
+
+  border-top:2px solid #111111;
+  border-bottom:1px solid #e5e5e5;
+}
+
+.store-title{
+  font-size:13px;
+  font-weight:700;
+  color:#111111;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+
+/* ================= STORE TOTAL ================= */
+
+.store-summary{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:18px 12px;
+
+  border-top:1px solid #e5e5e5;
+}
+
+.store-total{
+  font-size:13px;
+  font-weight:700;
+  text-transform:uppercase;
+  color:#111111;
+}
+
+.store-price{
+  font-size:18px;
+  font-weight:900;
+  color:#111111;
+}
+
+/* ================= STORE ACTIONS ================= */
+
+.store-actions{
+  display:flex;
+  justify-content:flex-end;
+  padding:0 12px 20px;
+}
+/* =======================================
+   CHECKOUT MODAL
+======================================= */
+
+.checkout-modal{
+  position:fixed;
+  inset:0;
+
+  background:rgba(0,0,0,.45);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  z-index:999;
+}
+
+/* =======================================
+   CARD
+======================================= */
+
+.checkout-card{
+
+  width:100%;
+  max-width:500px;
+
+  background:#fff;
+
+  border-radius:4px;
+
+  box-shadow:0 10px 30px rgba(0,0,0,.15);
+
+  padding:28px;
+}
+
+/* =======================================
+   TITLE
+======================================= */
+
+.checkout-card h3{
+
+  margin:0 0 8px;
+
+  font-size:22px;
+
+  font-weight:900;
+
+  color:#111;
+
+  text-transform:uppercase;
+
+  letter-spacing:1px;
+}
+
+.checkout-card p{
+
+  margin-bottom:20px;
+
+  color:#666;
+
+  font-size:14px;
+
+  line-height:1.6;
+}
+
+/* =======================================
+   TEXTAREA
+======================================= */
+
+.checkout-card textarea{
+
+  width:100%;
+
+  min-height:120px;
+
+  padding:14px;
+
+  border:1px solid #dcdcdc;
+
+  border-radius:4px;
+
+  resize:vertical;
+
+  font-size:14px;
+
+  font-family:inherit;
+
+  box-sizing:border-box;
+
+  outline:none;
+
+  transition:.2s;
+}
+
+.checkout-card textarea:focus{
+
+  border-color:#111;
+}
+
+/* =======================================
+   BUTTONS
+======================================= */
+
+.address-actions{
+
+  display:flex;
+
+  justify-content:flex-end;
+
+  gap:12px;
+
+  margin-top:24px;
+}
+
+.btn-cancel-address{
+
+  padding:12px 28px;
+
+  background:#fff;
+
+  color:#111;
+
+  border:2px solid #111;
+
+  border-radius:2px;
+
+  font-size:12px;
+
+  font-weight:700;
+
+  text-transform:uppercase;
+
+  letter-spacing:.8px;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+.btn-cancel-address:hover{
+
+  background:#f4f4f4;
+}
+
+.btn-confirm{
+
+  padding:12px 30px;
+
+  background:#111;
+
+  color:#fff;
+
+  border:none;
+
+  border-radius:2px;
+
+  font-size:12px;
+
+  font-weight:700;
+
+  text-transform:uppercase;
+
+  letter-spacing:.8px;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+.btn-confirm:hover{
+
+  background:#333;
+}

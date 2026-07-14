@@ -1,0 +1,65 @@
+<div class="store-profile" *ngIf="store">
+
+  <div class="back-button-container">
+  <button class="back-btn" (click)="goBack()">
+    Back to Products
+  </button>
+</div>
+
+  <!-- Store Header -->
+  <div class="store-header">
+    <div class="store-avatar">
+      🏪
+    </div>
+
+    <div class="store-info">
+      <h1>{{ store.name }}</h1>
+      <div class="rating">
+        ⭐ {{ averageRating | number:'1.1-1' }}
+        <span>
+          ({{ totalReviews }} Reviews)
+        </span>
+      </div>
+    </div>
+</div>
+
+  <!-- Store Details -->
+  <div class="info-card">
+    <h2>Store Information</h2>
+    <div class="info-row">
+      <span class="label">Owner</span>
+      <span>{{ owner?.name }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Email</span>
+      <span>{{ owner?.email }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Address</span>
+      <span>{{ store.address }}</span>
+    </div>
+</div>
+
+  <!-- Map Placeholder -->
+  <div class="map-card">
+    <h2>Store Location</h2>
+    <div id="storeMap"></div>
+  </div>
+
+  <!-- Products -->
+  <div class="products-card">
+    <h2>Products</h2>
+    <div class="product-grid">
+      <div
+        class="product-item"
+        *ngFor="let product of products">
+        <img
+          [src]="product.imageUrl.startsWith('http')
+          ? product.imageUrl
+          : '/assets/images/' + product.imageUrl">
+        <h4>{{ product.name }}</h4>
+        <p>{{ product.price | currency:'PHP' }}</p>
+      </div>
+    </div>
+  </div>
+</div>

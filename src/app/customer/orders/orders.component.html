@@ -1,1 +1,111 @@
-<p>orders works!</p>
+<div class="orders-wrapper">
+
+  <h1>My Orders</h1>
+
+  <div *ngIf="orders.length === 0" class="empty-state">
+    No orders yet. Start shopping!
+  </div>
+
+  <div class="order-card" *ngFor="let order of orders">
+
+    <div class="order-header">
+      <div>
+        <span class="order-id">Order #{{ order._id.slice(-6).toUpperCase() }}</span>
+        <span class="order-status" [ngClass]="getStatusClass(order.status)">
+          {{ order.status }}
+        </span>
+      </div>
+      <span class="order-date">{{ order.createdAt | date: 'MMM d, y h:mm a' }}</span>
+    </div>
+
+    <!-- Order Tracking -->
+    <div class="tracking-bar" *ngIf="order.status !== 'Cancelled'">
+      <div class="tracking-step" [class.active]="getStatusStep(order.status) >= 1" [class.done]="getStatusStep(order.status) > 1">
+        <div class="step-dot"></div>
+        <span>Pending</span>
+      </div>
+      <div class="tracking-line" [class.done]="getStatusStep(order.status) > 1"></div>
+      <div class="tracking-step" [class.active]="getStatusStep(order.status) >= 2" [class.done]="getStatusStep(order.status) > 2">
+        <div class="step-dot"></div>
+        <span>Confirmed</span>
+      </div>
+      <div class="tracking-line" [class.done]="getStatusStep(order.status) > 2"></div>
+      <div class="tracking-step" [class.active]="getStatusStep(order.status) >= 3" [class.done]="getStatusStep(order.status) > 3">
+        <div class="step-dot"></div>
+        <span>Shipped</span>
+      </div>
+      <div class="tracking-line" [class.done]="getStatusStep(order.status) > 3"></div>
+      <div class="tracking-step" [class.active]="getStatusStep(order.status) >= 4">
+        <div class="step-dot"></div>
+        <span>Delivered</span>
+      </div>
+    </div>
+
+    <div class="cancelled-notice" *ngIf="order.status === 'Cancelled'">
+      ✕ This order was cancelled
+    </div>
+
+    <!-- Items -->
+    <div class="order-items">
+      <div class="item" *ngFor="let item of order.items">
+        <img [src]="item.imageUrl?.startsWith('http') ? item.imageUrl : '/assets/images/' + item.imageUrl"
+             alt="{{ item.name }}">
+        <div class="item-info">
+          <span class="item-name">{{ item.name }}</span>
+          <span class="item-price">{{ item.price | currency: 'PHP' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address & Total -->
+    <div class="order-footer">
+  
+  <div class="order-actions">
+  <button
+    *ngIf="order.status === 'Delivered' && !order.hasRated"
+    class="btn-confirm"
+    (click)="orderReceived(order)">
+    Order Received
+</button>
+
+<button
+    *ngIf="order.hasRated"
+    class="btn-rated"
+    disabled>
+    ⭐ Rated
+</button>
+</div>
+
+  <div class="order-address">
+    <span class="label">
+      📍 {{ order.address }}
+    </span>
+  </div>
+
+  <div class="order-total">
+    <span class="label">Total:</span>
+    <span class="total-price">
+      {{ order.totalPrice | currency:'PHP' }}
+    </span>
+  </div>
+
+</div>
+
+<!-- Customer Cancel Button -->
+<div
+    class="order-actions"
+    *ngIf="order.status === 'Pending'">
+
+    <button
+        class="btn-cancel-order"
+        (click)="cancelOrder(order._id)">
+
+        Cancel Order
+
+    </button>
+
+</div>
+
+  </div>
+
+</div>

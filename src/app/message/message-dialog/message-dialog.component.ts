@@ -19,7 +19,7 @@ export class MessageDialogComponent {
   sendMessage(): void {
     if (!this.messageContent.trim()) return;
     this.messageService.sendMessage({
-      receiver: this.product.owner._id,
+      receiver: this.product.store.owner._id,
       productId: this.product._id,
       productName: this.product.name,
       content: this.messageContent

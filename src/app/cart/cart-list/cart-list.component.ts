@@ -11,7 +11,12 @@ import { OrderService } from 'src/app/order/order.service';
 })
 export class CartListComponent implements OnInit {
 
+  selectedStore: any = null;
+  selectedStoreItems: any[] = [];
+
   cartItems: Product[] = [];
+  groupedCart: any [] = [];
+
   totalPrice: number = 0;
   showAddressForm = false;
   deliveryAddress = '';
@@ -27,12 +32,33 @@ export class CartListComponent implements OnInit {
   }
 
   loadCart(): void {
-    this.cartService.getCartItems().subscribe(data => {
-      this.cartItems = data;
-      this.totalPrice = this.getTotalPrice();
-    });
-  }
+  this.cartService.getCartItems().subscribe(data => {
 
+    this.cartItems = data;
+
+    const groups: any = {};
+
+    data.forEach((item: any) => {
+
+      const storeId = item.store._id;
+
+      if (!groups[storeId]) {
+        groups[storeId] = {
+          store: item.store,
+          items: [],
+          total: 0
+        };
+      }
+
+      groups[storeId].items.push(item);
+      groups[storeId].total += item.price;
+    });
+
+    this.groupedCart = Object.values(groups);
+
+    this.totalPrice = this.getTotalPrice();
+  });
+}
   getTotalPrice(): number {
     let total = 0;
     for (let item of this.cartItems) {
@@ -42,38 +68,48 @@ export class CartListComponent implements OnInit {
   }
 
   clearCart(): void {
-    if (confirm('Are you sure you want to clear the cart?')) {
-      this.cartService.clearCart().subscribe(() => {
-        this.cartItems = [];
-        this.totalPrice = 0;
-        alert('Cart cleared!');
-      });
+
+  this.cartService.clearCart().subscribe({
+    next: () => {
+
+      this.cartItems = [];
+      this.groupedCart = [];
+      this.totalPrice = 0;
+    },
+    error: (err) => {
+      alert(err.error?.message || 'Unable to clear cart.');
     }
-  }
+  });
+
+}
 
   checkout(): void {
     if (this.cartItems.length === 0) {
       alert('Your cart is empty!');
       return;
     }
-    // 👇 Show address form instead of immediately checking out
+
     this.showAddressForm = true;
   }
+  checkoutStore(store: any): void {
+    this.selectedStore = store;
+    this.showAddressForm = true;
+}
 
   confirmCheckout(): void {
     if (!this.deliveryAddress.trim()) {
       alert('Please enter your delivery address!');
       return;
     }
+  
 
-    this.orderService.checkout(this.deliveryAddress).subscribe({
+  this.orderService.checkout(this.deliveryAddress,this.selectedStore.store._id).subscribe({
       next: () => {
-        this.cartItems = [];
-        this.totalPrice = 0;
+        this.loadCart();
         this.showAddressForm = false;
         this.deliveryAddress = '';
         alert('Order placed successfully! Thank you for shopping at LazShopee!');
-        this.router.navigate(['/orders']); // 👈 redirect to orders page
+        this.router.navigate(['/orders']);
       },
       error: (err) => {
         alert(err.error.message || 'Checkout failed. Please try again.');

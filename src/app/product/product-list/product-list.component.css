@@ -80,7 +80,7 @@
 .product-card mat-card-subtitle {
   font-size: 13px !important;
   font-weight: 400 !important;
-  color: #666666 !important;
+  color: #000000 !important;
   margin-top: 2px !important;
 }
 
@@ -88,7 +88,7 @@
 .store-name {
   font-size: 11px !important;
   font-weight: 500;
-  color: #999999;
+  color: #5a5757;
   margin-top: 4px !important;
   letter-spacing: 0.3px;
   text-transform: uppercase;
@@ -209,4 +209,19 @@
   .btn-message {
     width: 100% !important;
   }
+}
+.store-name {
+    color: #000000;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.store-name.clickable {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.store-name.clickable:hover {
+    color: #d84315;
+    text-decoration: underline;
 }

@@ -2,9 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+
+private loggedInSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
+loggedIn$ = this.loggedInSubject.asObservable();
 
   private apiUrl = environment.apiUrl + '/auth';
 
@@ -19,11 +23,13 @@ export class AuthService {
   }
 
   saveToken(token: string, role: string, name: string, id: string): void {
-    localStorage.setItem('token', token);
-    localStorage.setItem('role', role);
-    localStorage.setItem('name', name);
-    localStorage.setItem('userId', id);
-  }
+  localStorage.setItem('token', token);
+  localStorage.setItem('role', role);
+  localStorage.setItem('name', name);
+  localStorage.setItem('id', id);
+
+  this.loggedInSubject.next(true);
+}
 
   getToken(): string | null {
     return localStorage.getItem('token');
@@ -41,9 +47,12 @@ export class AuthService {
     return !!localStorage.getItem('token');
   }
 
-  logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('name');
-  }
+ logout(): void {
+  localStorage.removeItem('token');
+  localStorage.removeItem('role');
+  localStorage.removeItem('name');
+  localStorage.removeItem('id');
+
+  this.loggedInSubject.next(false);
+}
 }

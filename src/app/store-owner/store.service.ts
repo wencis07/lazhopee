@@ -12,6 +12,7 @@ export class StoreService {
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
+    console.log('TOKEN:', token);
     return new HttpHeaders({ 'Authorization': `Bearer ${token}` });
   }
 
@@ -35,10 +36,17 @@ export class StoreService {
     return this.http.put(`${this.apiUrl}/products/${id}`, product, { headers: this.getHeaders() });
   }
 
+  updateStore(data:any){
+    return this.http.patch(`${this.apiUrl}/my-store`, data,{headers: this.getHeaders()});
+  }
+
   deleteProduct(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/products/${id}`, { headers: this.getHeaders() });
   }
   getCategories(): Observable<any>{
     return this.http.get(environment.apiUrl + '/categories')
   }
+  getStoreProfile(id: string) {
+  return this.http.get(`${environment.apiUrl}/store/${id}`);
+}
 }

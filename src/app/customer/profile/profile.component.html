@@ -1,1 +1,57 @@
-<p>profile works!</p>
+<div class="profile-wrapper">
+
+  <h1>My Account</h1>
+
+  <div class="tabs">
+    <button class="tab" [class.active]="activeTab === 'profile'" (click)="switchTab('profile')">Profile</button>
+    <button class="tab" [class.active]="activeTab === 'password'" (click)="switchTab('password')">Change Password</button>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div *ngIf="activeTab === 'profile'" class="tab-content">
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" [(ngModel)]="name" placeholder="Enter your name">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="email" placeholder="Enter your email">
+    </div>
+    <div class="form-group">
+      <label>Role</label>
+      <input type="text" [value]="role" disabled>
+    </div>
+
+    <div class="success-msg" *ngIf="successMessage">{{ successMessage }}</div>
+    <div class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <div class="form-actions">
+      <button class="btn-save" (click)="updateProfile()">Save Changes</button>
+      <button class="btn-delete" (click)="deleteAccount()">Delete Account</button>
+    </div>
+  </div>
+
+  <!-- PASSWORD TAB -->
+  <div *ngIf="activeTab === 'password'" class="tab-content">
+    <div class="form-group">
+      <label>Current Password</label>
+      <input type="password" [(ngModel)]="currentPassword" placeholder="Enter current password">
+    </div>
+    <div class="form-group">
+      <label>New Password</label>
+      <input type="password" [(ngModel)]="newPassword" placeholder="Enter new password">
+    </div>
+    <div class="form-group">
+      <label>Confirm New Password</label>
+      <input type="password" [(ngModel)]="confirmPassword" placeholder="Confirm new password">
+    </div>
+
+    <div class="success-msg" *ngIf="passwordSuccess">{{ passwordSuccess }}</div>
+    <div class="error-msg" *ngIf="passwordError">{{ passwordError }}</div>
+
+    <div class="form-actions">
+      <button class="btn-save" (click)="changePassword()">Change Password</button>
+    </div>
+  </div>
+
+</div>

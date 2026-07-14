@@ -11,7 +11,7 @@ const adminUser = {
 
 mongoose.connect(process.env.MONGO_URI)
   .then(async () => {
-    console.log('✅ Connected to MongoDB');
+    console.log('Connected to MongoDB');
 
     const existing = await User.findOne({ email: adminUser.email });
     if (existing) {
@@ -24,4 +24,4 @@ mongoose.connect(process.env.MONGO_URI)
 
     mongoose.connection.close();
   })
-  .catch(err => console.error('❌ Error:', err));
+  .catch(err => console.error('Error:', err));

@@ -1,11 +1,17 @@
-export class Product {
-    id: number = 0;
-    name: string = "";
-    price: number = 0;
-    imageUrl: string = "";
-    owner: {
-        _id: string;
-        name: string;
-    } = { _id: "", name: "" }
+export interface Product {
+  _id?: string;
+  name: string;
+  price: number;
+  imageUrl: string;
+  category?: string;
 
+  store?: {
+    _id: string;
+    name: string;
+
+    owner?: {
+      _id: string;
+      name: string;
+    };
+  };
 }

@@ -19,8 +19,23 @@ export class CartService {
   }
 
   addToCart(product: Product): Observable<Product> {
-    return this.http.post<Product>(this.apiCartUrl, product, { headers: this.getHeaders() });
-  }
+
+  const cartItem = {
+    product: product._id,
+    name: product.name,
+    price: product.price,
+    imageUrl: product.imageUrl,
+    store: product.store?._id
+  };
+
+  console.log('Sending:', cartItem);
+
+  return this.http.post<Product>(
+    this.apiCartUrl,
+    cartItem,
+    { headers: this.getHeaders() }
+  );
+}
 
   getCartItems(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiCartUrl, { headers: this.getHeaders() });
